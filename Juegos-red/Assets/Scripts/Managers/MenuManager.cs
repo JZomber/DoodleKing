@@ -11,6 +11,11 @@ public class MenuManager : MonoBehaviour
     {
         StartCoroutine(MenuScreen("ScreenMenu"));
     }
+
+    public void LoadLobby()
+    {
+        StartCoroutine(LobbyScreen("ScreenLobby"));
+    }
     
     public void LoadNextLevel() //Carga el primer nivel
     {
@@ -34,6 +39,15 @@ public class MenuManager : MonoBehaviour
 
         yield return new WaitForSeconds(2f);
 
+        SceneManager.LoadScene(str);
+    }
+    
+    private IEnumerator LobbyScreen(string str)
+    {
+        transition.SetTrigger("Start");
+
+        yield return new WaitForSeconds(2f);
+        
         SceneManager.LoadScene(str);
     }
     
