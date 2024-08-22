@@ -43,24 +43,31 @@ public class LevelManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        collectableManager = FindObjectOfType<CollectableManager>();
-
         if (collectableManager != null)
         {
-            collectableManager.OnAllFruitsCollected += FruitsCollected;
+            collectableManager = FindObjectOfType<CollectableManager>();
+            if (collectableManager != null)
+            {
+                collectableManager.OnAllFruitsCollected += FruitsCollected;
+            }
         }
 
-        _portalScript = portal.GetComponent<Portal>();
-
-        if (_portalScript != null)
+        if (portal != null)
         {
-            _portalScript.OnTpRequest += TpWaypoint;
+            _portalScript = portal.GetComponent<Portal>();
+            if (_portalScript != null)
+            {
+                _portalScript.OnTpRequest += TpWaypoint;
+            }
         }
 
-        _playerDamage = player.GetComponent<PlayerDamage>();
-        if (_playerDamage != null)
+        if (player != null)
         {
-            _playerDamage.OnPlayerKilled += HandlerPlayerKilled;
+            _playerDamage = player.GetComponent<PlayerDamage>();
+            if (_playerDamage != null)
+            {
+                _playerDamage.OnPlayerKilled += HandlerPlayerKilled;
+            }
         }
         
         _indexPlayerWaypoint = 0;
@@ -68,33 +75,42 @@ public class LevelManager : MonoBehaviour
         _indexPortalWaypoint = 0;
         
         //============================================================
-        
-        _totalPlayerWaypoints = holderPlayerWaypoints.transform.childCount;
-        playerWaypoints = new Transform[_totalPlayerWaypoints];
 
-        for (int i = 0; i < _totalPlayerWaypoints; i++)
+        if (holderPlayerWaypoints != null)
         {
-            playerWaypoints[i] = holderPlayerWaypoints.transform.GetChild(i).transform;
+            _totalPlayerWaypoints = holderPlayerWaypoints.transform.childCount;
+            playerWaypoints = new Transform[_totalPlayerWaypoints];
+
+            for (int i = 0; i < _totalPlayerWaypoints; i++)
+            {
+                playerWaypoints[i] = holderPlayerWaypoints.transform.GetChild(i).transform;
+            } 
         }
         
         //============================================================
-        
-        _totalCameraWaypoints = holderCameraWaypoints.transform.childCount;
-        cameraWaypoints = new Transform[_totalCameraWaypoints];
 
-        for (int i = 0; i < _totalCameraWaypoints; i++)
+        if (holderCameraWaypoints != null)
         {
-            cameraWaypoints[i] = holderCameraWaypoints.transform.GetChild(i).transform;
+            _totalCameraWaypoints = holderCameraWaypoints.transform.childCount;
+            cameraWaypoints = new Transform[_totalCameraWaypoints];
+
+            for (int i = 0; i < _totalCameraWaypoints; i++)
+            {
+                cameraWaypoints[i] = holderCameraWaypoints.transform.GetChild(i).transform;
+            }
         }
         
         //============================================================
-        
-        _totalPortalWaypoints = holderPortalWaypoints.transform.childCount;
-        portalWaypoints = new Transform[_totalPortalWaypoints];
 
-        for (int i = 0; i < _totalPortalWaypoints; i++)
+        if (holderPortalWaypoints != null)
         {
-            portalWaypoints[i] = holderPortalWaypoints.transform.GetChild(i).transform;
+            _totalPortalWaypoints = holderPortalWaypoints.transform.childCount;
+            portalWaypoints = new Transform[_totalPortalWaypoints];
+
+            for (int i = 0; i < _totalPortalWaypoints; i++)
+            {
+                portalWaypoints[i] = holderPortalWaypoints.transform.GetChild(i).transform;
+            }
         }
     }
     
