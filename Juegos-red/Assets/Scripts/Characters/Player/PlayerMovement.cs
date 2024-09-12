@@ -34,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D _rigidbody2D;
     
     private bool _facingRight = true;
+    public bool FacingRight => _facingRight;
     
     public UnityEvent onLandEvent;
     
@@ -135,12 +136,6 @@ public class PlayerMovement : MonoBehaviour
         EventQueue.Instance.QueueCommands(knockBackCommand);
     }
 
-    public void Bounce() // Cuando el player colisiona con un "WeakPoint" enemigo
-    {
-        var bounceCommand = new PhysicsJumpCommand(bounceForce, _rigidbody2D);
-        EventQueue.Instance.QueueCommands(bounceCommand);
-    }
-
     public void OnLanding() // Cada vez que toca el suelo o una plataforma
     {
         animator.SetBool("isJumping", false);
@@ -154,5 +149,18 @@ public class PlayerMovement : MonoBehaviour
         Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
+    }
+
+    public bool CheckIsFacingRight()
+    {
+        bool result;
+
+        if (_facingRight == true)
+        {
+            result = true;
+            return result;
+        }
+
+        return default;
     }
 }

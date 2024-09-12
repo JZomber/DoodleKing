@@ -18,20 +18,13 @@ public class PlayerDamage : MonoBehaviour, IDamageable
 
     private Vector2 _playerSpawn;
 
-    private bool _weakPointHit;
-
     private bool _isHit;
     
     private BoxCollider2D _boxCollider2D;
 
     private Rigidbody2D _rigidbody2D;
 
-    [SerializeField] private int _playerLives = 5;
-
-    private GameObject _enemyRef;
-
-    public event Action OnTakeDamage;
-    public event Action OnPlayerKilled;
+    private GameObject _bombRef;
 
     private void Start()
     {
@@ -54,12 +47,10 @@ public class PlayerDamage : MonoBehaviour, IDamageable
     public void TakeDamage() // El player recibe daño
     {
         animator.SetTrigger("isHit"); 
-        playerMovement.KnockBack(_enemyRef);
-        _enemyRef = null;
-        _playerLives--;
+        playerMovement.KnockBack(_bombRef);
+        _bombRef = null;
         
         LoseControl();
-        OnTakeDamage?.Invoke();
     }
     
     private void LoseControl() // El player no puede moverse
@@ -68,14 +59,7 @@ public class PlayerDamage : MonoBehaviour, IDamageable
         animator.SetBool("isAlive", false);
         _boxCollider2D.enabled = false;
         
-        if (_playerLives <= 0)
-        {
-            OnPlayerKilled?.Invoke();
-        }
-        else
-        {
-            StartCoroutine(Respawn(2f));
-        }
+        StartCoroutine(Respawn(2f));
     }
 
     private IEnumerator Respawn(float delay) // Re-posición del player + animación
@@ -83,23 +67,19 @@ public class PlayerDamage : MonoBehaviour, IDamageable
         
         yield return new WaitForSeconds(delay);
 
-        if (_playerLives > 0)
-        {
-            _rigidbody2D.velocity = new Vector2(0, 0);
-            gameObject.transform.position = _playerSpawn;
-            _boxCollider2D.enabled = true;
+        _rigidbody2D.velocity = new Vector2(0, 0);
+        gameObject.transform.position = _playerSpawn;
+        _boxCollider2D.enabled = true;
         
-            animator.SetTrigger("isRespawn");
-            animator.SetBool("isAlive", true);
-
-            StartCoroutine(PlayerCanMove(1f));
-        }
+        animator.SetTrigger("isRespawn");
+        animator.SetBool("isAlive", true);
+        
+        StartCoroutine(PlayerCanMove(1f));
     }
     
     private IEnumerator CoolDownHit(float delay) // CoolDown antes de que se pueda colisionar nuevamente
     {
         yield return new WaitForSeconds(delay);
-        _weakPointHit = false;
         _isHit = false;
     }
 
@@ -109,47 +89,16 @@ public class PlayerDamage : MonoBehaviour, IDamageable
         playerMovement.canMove = true;
     }
 
-    private void OnCollisionEnter2D(Collision2D other) // Colisión Player > Enemigos
+    private void OnCollisionEnter2D(Collision2D other) // Collision Player > Bomb's explosion.
     {
-        if (other.gameObject.CompareTag("Enemy") && !_weakPointHit && !_isHit)
+        if (other.gameObject.CompareTag("Explosion") && !_isHit)
         {
             _isHit = true;
             
-            _enemyRef = other.gameObject;
+            _bombRef = other.gameObject;
             TakeDamage();
             
             StartCoroutine(CoolDownHit(1f));
         }
     }
-
-    private void OnTriggerEnter2D(Collider2D other) // Colisión Player > Punto débil (Enemigo)
-    {
-        if (other.gameObject.CompareTag("WeakPoint"))
-        {
-            _weakPointHit = true;
-            playerMovement.Bounce();
-
-            other.gameObject.TryGetComponentInParent(out IDamageable damageableObject);
-            damageableObject.TakeDamage();
-            
-            StartCoroutine(CoolDownHit(1f));
-        }
-
-        if (other.gameObject.CompareTag("EnemyAttack") && !_isHit) // Colisión Player > Ataque enemigo (Ej. bullet)
-        {
-            _isHit = true;
-            _enemyRef = other.gameObject;
-            TakeDamage();
-            
-            StartCoroutine(CoolDownHit(1f));
-        }
-
-        if (other.gameObject.CompareTag("Collectable")) // Colisión player > (item) Recolectable
-        {
-            other.gameObject.TryGetComponentInParent(out ICollectable collectable);
-            collectable.CollectItem();
-        }
-    }
-
-    
 }
