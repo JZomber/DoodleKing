@@ -58,4 +58,21 @@ namespace Command
             targetRigidbody2D.velocity = knockBackDirection;
         }
     }
+
+    public class PhysicsBombThrowCommand : ICommand
+    {
+        private readonly Vector2 throwDirection;
+        private readonly Rigidbody2D targetRigidbody2D;
+
+        public PhysicsBombThrowCommand(Vector2 p_throwDirection, Rigidbody2D p_targetRigidbody2D)
+        {
+            throwDirection = p_throwDirection;
+            targetRigidbody2D = p_targetRigidbody2D;
+        }
+        
+        public void Execute()
+        {
+            targetRigidbody2D.velocity = throwDirection;
+        }
+    }
 }
