@@ -1,26 +1,36 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using Command;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
+using Photon.Pun;
+using Unity.Mathematics;
+using Vector3 = UnityEngine.Vector3;
 
 public class PlayerCombat : MonoBehaviour
 {
+    private PhotonView _playerView;
+    
     [Header("Combat Values")] 
     [SerializeField] private GameObject _bombPrefab;
+    [SerializeField] private Transform bombOrigin;
+    [SerializeField] private float _bombCdTime;
     [SerializeField] private bool _isBombInCD;
-    private Rigidbody2D _bombRB;
     private bool isFacingRight;
 
-    [SerializeField] private Vector2 _throwForce = new Vector2(2, 2);
+    [SerializeField] private Vector2 _throwForce;
 
     private PlayerMovement _playerMovement;
-    
+
+    private void Awake()
+    {
+        _playerView = GetComponent<PhotonView>();
+    }
+
     void Start()
     {
-        _bombRB = _bombPrefab.GetComponent<Rigidbody2D>();
-
         if (_playerMovement == null)
         {
             _playerMovement = GetComponent<PlayerMovement>();
@@ -29,24 +39,33 @@ public class PlayerCombat : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.F) && !_isBombInCD)
+        if (_playerView.IsMine)
         {
-            Vector2 throwDirection;
-            
-            Instantiate(_bombPrefab);
-
-
-            if (_playerMovement.CheckIsFacingRight())
+            if (Input.GetKey(KeyCode.F) && !_isBombInCD)
             {
-                throwDirection = new Vector2(_throwForce.x, _throwForce.y);
+                Vector2 throwDirection;
+
+                if (_playerMovement.CheckIsFacingRight())
+                {
+                    throwDirection = new Vector2(_throwForce.x, _throwForce.y);
+                }
+                else
+                {
+                    throwDirection = new Vector2(-_throwForce.x, _throwForce.y);
+                }
+
+                _isBombInCD = true;
+                StartCoroutine(BombCoolDown(_bombCdTime));
+                
+                var instance = PhotonNetwork.Instantiate(_bombPrefab.name, bombOrigin.position, quaternion.identity);
+                instance.GetComponent<BombController>().ThrowForce(throwDirection);
             }
-            else
-            {
-                throwDirection = new Vector2(-_throwForce.x, _throwForce.y);
-            }
-            
-            // var throwCommand = new PhysicsBombThrowCommand(throwDirection, _bombRB);
-            // EventQueue.Instance.QueueCommands(throwCommand);
         }
+    }
+
+    private IEnumerator BombCoolDown(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _isBombInCD = false;
     }
 }
