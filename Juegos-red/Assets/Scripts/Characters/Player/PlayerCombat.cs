@@ -45,8 +45,8 @@ public class PlayerCombat : MonoBehaviour
                 throwDirection = new Vector2(-_throwForce.x, _throwForce.y);
             }
             
-            var throwCommand = new PhysicsBombThrowCommand(throwDirection, _bombRB);
-            EventQueue.Instance.QueueCommands(throwCommand);
+            // var throwCommand = new PhysicsBombThrowCommand(throwDirection, _bombRB);
+            // EventQueue.Instance.QueueCommands(throwCommand);
         }
     }
 }
