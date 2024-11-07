@@ -6,7 +6,6 @@ using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 using Photon.Pun;
 using Unity.Mathematics;
-using Vector3 = UnityEngine.Vector3;
 
 public class PlayerCombat : MonoBehaviour
 {

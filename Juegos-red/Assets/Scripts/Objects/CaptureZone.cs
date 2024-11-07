@@ -5,7 +5,6 @@ using Photon.Pun;
 
 public class CaptureZone : MonoBehaviour
 {
-    private float timeInZone;
     private bool playerInsideZone;
     private GameObject playerGameObject;
 
@@ -16,7 +15,6 @@ public class CaptureZone : MonoBehaviour
         {
             playerInsideZone = true;
             playerGameObject = collision.gameObject;
-            //timeInZone = 0f;
             ChangeColor(true);
             StartCoroutine(AddPlayerPointsEverySecond());
         }
@@ -28,7 +26,6 @@ public class CaptureZone : MonoBehaviour
         {
             playerInsideZone = false;
             playerGameObject = null;
-            //timeInZone = 0f;
             ChangeColor(false);
             StopCoroutine(AddPlayerPointsEverySecond());
         }
@@ -54,7 +51,6 @@ public class CaptureZone : MonoBehaviour
                 if (playerPV != null && playerPV.IsMine)
                 {
                     ScoreManager.instance.AddScorePoints(playerPV.OwnerActorNr);
-                    Debug.Log("LLAMADA AL SCORE MANAGER");
                 }
             }
         }

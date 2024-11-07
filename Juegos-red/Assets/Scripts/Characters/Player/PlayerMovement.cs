@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviourPun
 {
     private PhotonView _playerView;
     
@@ -128,7 +128,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void KnockBack(GameObject gameObject) // KnockBack cuando el player recibe un ataque enemigo
+    public void KnockBack(GameObject gameObject) // KnockBack cuando el player recibe un ataque
     {
         if (_playerView.IsMine)
         {
@@ -153,6 +153,7 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("isGrounded", true);
     }
 
+    [PunRPC]
     private void Flip() // Invierte el sprite del player según la dirección
     {
         if (_playerView.IsMine)

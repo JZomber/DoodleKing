@@ -24,7 +24,7 @@ public class PlayerDamage : MonoBehaviour, IDamageable
 
     private Rigidbody2D _rigidbody2D;
 
-    private GameObject _bombRef;
+    private GameObject _bombExplosionRef;
 
     private void Start()
     {
@@ -47,8 +47,8 @@ public class PlayerDamage : MonoBehaviour, IDamageable
     public void TakeDamage() // El player recibe daño
     {
         animator.SetTrigger("isHit"); 
-        playerMovement.KnockBack(_bombRef);
-        _bombRef = null;
+        playerMovement.KnockBack(_bombExplosionRef);
+        _bombExplosionRef = null;
         
         LoseControl();
     }
@@ -89,15 +89,15 @@ public class PlayerDamage : MonoBehaviour, IDamageable
         playerMovement.canMove = true;
     }
 
-    private void OnCollisionEnter2D(Collision2D other) // Collision Player > Bomb's explosion.
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (other.gameObject.CompareTag("Explosion") && !_isHit)
+        if (collision.CompareTag("Explosion") && !_isHit)
         {
             _isHit = true;
-            
-            _bombRef = other.gameObject;
+
+            _bombExplosionRef = collision.gameObject;
             TakeDamage();
-            
+
             StartCoroutine(CoolDownHit(1f));
         }
     }
