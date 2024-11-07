@@ -24,7 +24,7 @@ public class PlayerSpawn : MonoBehaviour
         }
         
         PhotonNetwork.Instantiate(playerPrefab[index].name, playerSpawns[index].transform.position, quaternion.identity);
-        Canvas playerCanvas = playerPrefab[index].GetComponentInChildren<Canvas>();
-        playerCanvas.worldCamera = mainCamera;
+        //Canvas playerCanvas = playerPrefab[index].GetComponentInChildren<Canvas>();
+        //playerCanvas.worldCamera = mainCamera;
     }
 }
