@@ -8,7 +8,6 @@ public class CaptureZone : MonoBehaviour
     private bool playerInsideZone;
     private GameObject playerGameObject;
 
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))

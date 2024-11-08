@@ -285,7 +285,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   explosionRadious: {fileID: 948552076643434654}
-  explosionTime: 1
+  explosionTime: 1.5
 --- !u!114 &3654022490681945575
 MonoBehaviour:
   m_ObjectHideFlags: 0
