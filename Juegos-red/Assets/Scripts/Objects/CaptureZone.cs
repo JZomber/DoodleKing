@@ -7,6 +7,7 @@ public class CaptureZone : MonoBehaviour
 {
     private bool playerInsideZone;
     private GameObject playerGameObject;
+    private Coroutine pointsCoroutine; // Coroutine instance || Each "StartCoroutine" is an instance by itself. Better look for an individual variable to store singular coroutines.
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -15,7 +16,11 @@ public class CaptureZone : MonoBehaviour
             playerInsideZone = true;
             playerGameObject = collision.gameObject;
             ChangeColor(true);
-            StartCoroutine(AddPlayerPointsEverySecond());
+
+            if (pointsCoroutine == null)
+            {
+                pointsCoroutine = StartCoroutine(AddPlayerPointsEverySecond());
+            }
         }
     }
 
@@ -26,7 +31,12 @@ public class CaptureZone : MonoBehaviour
             playerInsideZone = false;
             playerGameObject = null;
             ChangeColor(false);
-            StopCoroutine(AddPlayerPointsEverySecond());
+
+            if (pointsCoroutine != null)
+            {
+                StopCoroutine(pointsCoroutine);
+                pointsCoroutine = null;
+            }
         }
     }
 
@@ -53,5 +63,7 @@ public class CaptureZone : MonoBehaviour
                 }
             }
         }
+
+        pointsCoroutine = null;
     }
 }
