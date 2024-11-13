@@ -9,7 +9,7 @@ public class CaptureZone : MonoBehaviourPun
     private GameObject playerGameObject;
     private Coroutine pointsCoroutine; // Coroutine instance || Each "StartCoroutine" is an instance by itself. Better look for an individual variable to store singular coroutines.
     
-    private Collider2D collider2D;
+    private Collider2D Collider2D;
     private SpriteRenderer spriteRenderer;
 
     private GameplayCallBacks gameplayCallBacks;
@@ -17,13 +17,13 @@ public class CaptureZone : MonoBehaviourPun
 
     private void Awake()
     {
-        collider2D = GetComponent<Collider2D>();
+        Collider2D = GetComponent<Collider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Start()
     {
-        collider2D.enabled = false;
+        Collider2D.enabled = false;
         spriteRenderer.enabled = false;
 
         gameplayCallBacks = FindObjectOfType<GameplayCallBacks>();
@@ -105,7 +105,7 @@ public class CaptureZone : MonoBehaviourPun
     [PunRPC]
     private void InitializeCaptureZone()
     {
-        collider2D.enabled = true;
+        Collider2D.enabled = true;
         spriteRenderer.enabled = true;
 
         gameplayCallBacks.OnMatchBeging -= InitializeRPC;
@@ -113,7 +113,7 @@ public class CaptureZone : MonoBehaviourPun
 
     private void DeactivateZone()
     {
-        collider2D.enabled = false;
+        Collider2D.enabled = false;
         spriteRenderer.enabled = false;
 
         timerManager.OnGameFinished -= DeactivateZone;
