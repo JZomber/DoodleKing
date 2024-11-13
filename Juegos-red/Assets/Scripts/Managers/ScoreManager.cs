@@ -14,8 +14,8 @@ public class ScoreManager : MonoBehaviourPun
     private int scorePlayer1;
     private int scorePlayer2;
 
-    public int ScorePlayer1 => scorePlayer1;
-    public int ScorePlayer2 => scorePlayer2;
+    public int GetScorePlayer1 => scorePlayer1;
+    public int GetScorePlayer2 => scorePlayer2;
 
     private void Awake()
     {

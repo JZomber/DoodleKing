@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using System;
 
 public class TimerManager : MonoBehaviourPunCallbacks
 {
@@ -17,15 +18,28 @@ public class TimerManager : MonoBehaviourPunCallbacks
 
     private bool gameEnded = false;
 
+    private GameplayCallBacks gameplayCallBacks;
+
+    public event Action OnGameFinished;
+
     private void Start()
     {
         remainingTime = gameTime;
 
-        // Solo el MasterClient será responsable de actualizar el temporizador
-        if (PhotonNetwork.IsMasterClient)
+        timerText.text = "??";
+
+        gameplayCallBacks = FindAnyObjectByType<GameplayCallBacks>();
+        if (gameplayCallBacks != null)
         {
-            StartCoroutine(GameTimer());
+            gameplayCallBacks.OnMatchBeging += InitializeTimer;
+            //Debug.Log("Timer subscripto al evento 'OnMatchBeging'");
         }
+
+        //// Solo el MasterClient será responsable de actualizar el temporizador
+        //if (PhotonNetwork.IsMasterClient && !gameStarted)
+        //{
+        //    StartCoroutine(GameTimer());
+        //}
     }
 
     private IEnumerator GameTimer()
@@ -59,38 +73,55 @@ public class TimerManager : MonoBehaviourPunCallbacks
     {
         gameEnded = true;
 
+        gameplayCallBacks.OnMatchBeging -= InitializeTimer;
+
         // Solo el MasterClient calcula el resultado
         if (PhotonNetwork.IsMasterClient)
         {
-            Player winner = GetWinner();
-            photonView.RPC("DisplayResult", RpcTarget.All, winner == PhotonNetwork.LocalPlayer);
+            int winnerActorNumber = GetWinnerActorNumber();
+            photonView.RPC("DisplayResult", RpcTarget.All, winnerActorNumber);
         }
+
+        OnGameFinished?.Invoke();
     }
 
-    private Player GetWinner()
+    private int GetWinnerActorNumber()
     {
         // Obtener la puntuación de los jugadores y compararlas
 
-        int scorePlayer1 = ScoreManager.instance.ScorePlayer1;
-        int scorePlayer2 = ScoreManager.instance.ScorePlayer2;
+        int scorePlayer1 = ScoreManager.instance.GetScorePlayer1;
+        int scorePlayer2 = ScoreManager.instance.GetScorePlayer2;
 
         if (scorePlayer1 > scorePlayer2)
         {
-            return PhotonNetwork.PlayerList[0]; // Player 1 won.
+            return PhotonNetwork.PlayerList[0].ActorNumber; // Player 1 won.
         }
         else if (scorePlayer2 > scorePlayer1)
         {
-            return PhotonNetwork.PlayerList[1]; // Player 2 won.
+            return PhotonNetwork.PlayerList[1].ActorNumber; // Player 2 won.
         }
 
-        return null;
+        return -1; // Tie case
     }
 
     [PunRPC]
-    private void DisplayResult(bool isWinner)
+    private void DisplayResult(int winnerActorNumber)
     {
-        // Mostrar el mensaje de victoria o derrota según el resultado
-        resultText.text = isWinner ? "¡Victoria!" : "Derrota";
+        if (winnerActorNumber == -1)
+        {
+            resultText.text = "¡Empate!";
+        }
+        else
+        {
+            bool isWinner = PhotonNetwork.LocalPlayer.ActorNumber == winnerActorNumber; 
+            resultText.text = isWinner ? "¡Victoria!" : "Derrota"; // Mostrar el mensaje de victoria o derrota según el resultado
+        }
+
         resultText.gameObject.SetActive(true);
+    }
+
+    private void InitializeTimer()
+    {
+        StartCoroutine(GameTimer());
     }
 }

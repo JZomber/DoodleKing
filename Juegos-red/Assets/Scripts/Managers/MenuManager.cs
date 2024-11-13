@@ -29,8 +29,8 @@ public class MenuManager : MonoBehaviour
         transition.SetTrigger("Start");
 
         yield return new WaitForSeconds(2f);
-        
-        SceneManager.LoadScene(str);
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene(str);
     }
 
     private IEnumerator LoadLevel(string str)
@@ -39,7 +39,7 @@ public class MenuManager : MonoBehaviour
 
         yield return new WaitForSeconds(2f);
 
-        SceneManager.LoadScene(str);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(str);
     }
     
     private IEnumerator LobbyScreen(string str)
@@ -47,8 +47,8 @@ public class MenuManager : MonoBehaviour
         transition.SetTrigger("Start");
 
         yield return new WaitForSeconds(2f);
-        
-        SceneManager.LoadScene(str);
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene(str);
     }
     
     public void GameQuit() // Quita el juego
