@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using System;
+using Unity.VisualScripting;
 
 public class TimerManager : MonoBehaviourPunCallbacks
 {
@@ -123,5 +124,13 @@ public class TimerManager : MonoBehaviourPunCallbacks
     private void InitializeTimer()
     {
         StartCoroutine(GameTimer());
+    }
+
+    public void AddExtraTIme(PowerUp powerUp, float time)
+    {
+        if (powerUp.powerUpName == "extraTime")
+        {
+            remainingTime += time;
+        }
     }
 }

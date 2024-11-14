@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NewPowerUp", menuName = "PowerUp")]
+[CreateAssetMenu(fileName = "NewPowerUp", menuName = "PowerUp/PowerUpSO")]
 public class PowerUp : ScriptableObject
 {
     public string powerUpName = "New PowerUp";
