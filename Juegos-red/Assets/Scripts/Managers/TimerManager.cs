@@ -9,8 +9,8 @@ using Unity.VisualScripting;
 
 public class TimerManager : MonoBehaviourPunCallbacks
 {
-    [Header("Configuración de tiempo")]
-    public float gameTime = 60f; // Duración del juego en segundos
+    [Header("Configuracion de tiempo")]
+    public float gameTime = 60f; // Duraciï¿½n del juego en segundos
     private float remainingTime;
 
     [Header("UI Elements")]
@@ -36,7 +36,7 @@ public class TimerManager : MonoBehaviourPunCallbacks
             //Debug.Log("Timer subscripto al evento 'OnMatchBeging'");
         }
 
-        //// Solo el MasterClient será responsable de actualizar el temporizador
+        //// Solo el MasterClient es responsable de actualizar el temporizador
         //if (PhotonNetwork.IsMasterClient && !gameStarted)
         //{
         //    StartCoroutine(GameTimer());
@@ -65,7 +65,7 @@ public class TimerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     private void UpdateTimer(float time)
     {
-        // Actualizar la visualización del temporizador en pantalla
+        // Actualizar la visualizacion del temporizador en pantalla
         timerText.text = $"{time}";
     }
 
@@ -88,7 +88,7 @@ public class TimerManager : MonoBehaviourPunCallbacks
 
     private int GetWinnerActorNumber()
     {
-        // Obtener la puntuación de los jugadores y compararlas
+        // Obtener la puntuacion de los jugadores y compararlas
 
         int scorePlayer1 = ScoreManager.instance.GetScorePlayer1;
         int scorePlayer2 = ScoreManager.instance.GetScorePlayer2;
@@ -110,12 +110,12 @@ public class TimerManager : MonoBehaviourPunCallbacks
     {
         if (winnerActorNumber == -1)
         {
-            resultText.text = "¡Empate!";
+            resultText.text = "Empate!";
         }
         else
         {
             bool isWinner = PhotonNetwork.LocalPlayer.ActorNumber == winnerActorNumber; 
-            resultText.text = isWinner ? "¡Victoria!" : "Derrota"; // Mostrar el mensaje de victoria o derrota según el resultado
+            resultText.text = isWinner ? "Victoria!" : "Derrota"; // Mostrar el mensaje de victoria o derrota segï¿½n el resultado
         }
 
         resultText.gameObject.SetActive(true);
