@@ -15,6 +15,8 @@ public class PowerUpPickup : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
 
         SelectRandomPowerUp();
+
+        spriteRenderer.sprite = powerUps[selectedPowerUpIndex].powerUpIcon;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -22,8 +24,6 @@ public class PowerUpPickup : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             StartCoroutine(ActivatePowerUpWithDuration(collision.gameObject));
-
-            gameObject.SetActive(false);
         }
     }
 
@@ -34,6 +34,8 @@ public class PowerUpPickup : MonoBehaviour
         yield return new WaitForSeconds(powerUps[selectedPowerUpIndex].duration);
 
         powerUps[selectedPowerUpIndex].DeactivatePowerUp(player);
+
+        gameObject.SetActive(false);
     }
 
     private void SelectRandomPowerUp()

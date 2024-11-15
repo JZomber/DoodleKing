@@ -11,10 +11,10 @@ public class ExtraTime : PowerUp
     {
         base.ActivatePowerUp(player);
 
-        var timerManager = FindAnyObjectByType<TimerManager>();
+        TimerManager timerManager = FindObjectOfType<TimerManager>();
         if (timerManager != null)
         {
-            timerManager.AddExtraTIme(this, extraTimeAmount);
+            timerManager.ExtraTime(this, extraTimeAmount);
         }
     }
 }

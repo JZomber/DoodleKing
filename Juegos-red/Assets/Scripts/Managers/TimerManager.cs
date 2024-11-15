@@ -126,11 +126,18 @@ public class TimerManager : MonoBehaviourPunCallbacks
         StartCoroutine(GameTimer());
     }
 
-    public void AddExtraTIme(PowerUp powerUp, float time)
+    public void ExtraTime(PowerUp powerUp, float time)
     {
-        if (powerUp.powerUpName == "extraTime")
+        if (powerUp.powerUpName == "ExtraTime" && PhotonNetwork.IsMasterClient)
         {
-            remainingTime += time;
+            photonView.RPC("AddExtraTime", RpcTarget.All, time);
         }
+    }
+
+    [PunRPC]
+    private void AddExtraTime(float time)
+    {
+        remainingTime += time;
+        Debug.Log("AGREGADO EXTRA TIME");
     }
 }
