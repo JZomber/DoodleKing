@@ -2,17 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoublePoints : MonoBehaviour
+[CreateAssetMenu(fileName = "NewDoublePoints", menuName = "PowerUp/DoublePoints")]
+public class DoublePoints : PowerUp
 {
-    // Start is called before the first frame update
-    void Start()
+    PowerUpsManager powerUpsManager;
+
+    public override void ActivatePowerUp(GameObject player)
     {
-        
+        base.ActivatePowerUp(player);
+
+        powerUpsManager = FindObjectOfType<PowerUpsManager>();
+        if (powerUpsManager != null)
+        {
+            powerUpsManager.StateDoublePoints(this);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void DeactivatePowerUp(GameObject player)
     {
-        
+        base.DeactivatePowerUp(player);
+
+        powerUpsManager.StateDoublePoints(this);
     }
 }

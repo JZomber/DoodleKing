@@ -3726,6 +3726,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MercuryBombPointsDamage: 20
+  isDoublePointsActive: 0
 --- !u!1 &1091362743
 GameObject:
   m_ObjectHideFlags: 0
@@ -4910,7 +4911,7 @@ PrefabInstance:
     - target: {fileID: 6928189167053867437, guid: 265ac4f626c3de74195a4db45c2d507d, type: 3}
       propertyPath: powerUps.Array.data[0]
       value: 
-      objectReference: {fileID: 11400000, guid: 0b7ed6cd1f3c628418370d548848bbfe, type: 2}
+      objectReference: {fileID: 11400000, guid: dbc8e7324bc8d574281bf861132b4980, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

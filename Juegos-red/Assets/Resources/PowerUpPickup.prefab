@@ -100,6 +100,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   powerUps:
   - {fileID: 11400000, guid: f70bb391ced6058499dd5827d69f44e6, type: 2}
+  - {fileID: 11400000, guid: dbc8e7324bc8d574281bf861132b4980, type: 2}
+  - {fileID: 11400000, guid: 0b7ed6cd1f3c628418370d548848bbfe, type: 2}
 --- !u!58 &7470908714316371660
 CircleCollider2D:
   m_ObjectHideFlags: 0

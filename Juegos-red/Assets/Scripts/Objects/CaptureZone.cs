@@ -14,6 +14,7 @@ public class CaptureZone : MonoBehaviourPun
 
     private GameplayCallBacks gameplayCallBacks;
     private TimerManager timerManager;
+    private PowerUpsManager powerUpsManager;
 
     private void Awake()
     {
@@ -37,6 +38,8 @@ public class CaptureZone : MonoBehaviourPun
         {
             timerManager.OnGameFinished += DeactivateZone;
         }
+
+        powerUpsManager = FindObjectOfType<PowerUpsManager>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -89,7 +92,14 @@ public class CaptureZone : MonoBehaviourPun
 
                 if (playerPV != null && playerPV.IsMine)
                 {
-                    ScoreManager.instance.AddScorePoints(playerPV.OwnerActorNr);
+                    int amount = 1;
+
+                    if (powerUpsManager.GetIsDoublePointsActive)
+                    {
+                        amount *= 2;
+                    }
+
+                    ScoreManager.instance.AddScorePoints(playerPV.OwnerActorNr, amount);
                 }
             }
         }

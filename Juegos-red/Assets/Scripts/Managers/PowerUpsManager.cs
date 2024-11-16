@@ -6,6 +6,10 @@ public class PowerUpsManager : MonoBehaviour
 {
     [SerializeField] private int MercuryBombPointsDamage;
 
+    [SerializeField] private bool isDoublePointsActive;
+
+    public bool GetIsDoublePointsActive => isDoublePointsActive;
+
     public int GetMercuryBombDamage => MercuryBombPointsDamage;
 
     // Start is called before the first frame update
@@ -18,5 +22,17 @@ public class PowerUpsManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void StateDoublePoints(PowerUp powerUp)
+    {
+        if (powerUp.powerUpName == "DoublePoints" && !isDoublePointsActive)
+        {
+            isDoublePointsActive = true;
+        }
+        else if (powerUp.powerUpName == "DoublePoints")
+        {
+            isDoublePointsActive = false;
+        }
     }
 }

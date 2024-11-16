@@ -22,11 +22,11 @@ public class ScoreManager : MonoBehaviourPun
         ScoreManager.instance = this;
     }
 
-    public void AddScorePoints(int actorNumber)
+    public void AddScorePoints(int actorNumber, int amount)
     {
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
-            photonView.RPC("UpdatePlayerScores", RpcTarget.All, actorNumber, 0);
+            photonView.RPC("UpdatePlayerScores", RpcTarget.All, actorNumber, amount, ScoreOperation.AddPoints);
         }
     }
 
@@ -34,41 +34,58 @@ public class ScoreManager : MonoBehaviourPun
     {
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
-            photonView.RPC("UpdatePlayerScores", RpcTarget.All, actorNumber, amount);
+            photonView.RPC("UpdatePlayerScores", RpcTarget.All, actorNumber, amount, ScoreOperation.SubtractPoints);
         }
     }
 
     [PunRPC]
-    private void UpdatePlayerScores(int actorNumber, int amount)
+    private void UpdatePlayerScores(int actorNumber, int amount, ScoreOperation operation)
     {
         //Debug.Log($"ACTOR NUMBER {actorNumber}");
 
-        if (amount > 0) // Block to rest player's scores.
+        switch (operation)
         {
-            if (actorNumber == 1)
-            {
-                scorePlayer1 -= amount;
-                textScoreplayer1.text = $"{scorePlayer1}";
-            }
-            else if (actorNumber == 2)
-            { 
-                scorePlayer2 -= amount;
-                textScoreplayer2.text = $"{scorePlayer2}";
-            }
+            case ScoreOperation.AddPoints:
 
-            amount = 0;
-            return;
-        }
+                if (actorNumber == 1)
+                {
+                    scorePlayer1 += amount;
+                    textScoreplayer1.text = $"{scorePlayer1}";
+                }
+                else if (actorNumber == 2)
+                { 
+                    scorePlayer2 += amount;
+                    textScoreplayer2.text = $"{scorePlayer2}";
+                }
 
-        if (actorNumber == 1)
-        {
-            scorePlayer1++;
-            textScoreplayer1.text = $"{scorePlayer1}";
+                break;
+
+            case ScoreOperation.SubtractPoints:
+
+                if (actorNumber == 1)
+                {
+                    scorePlayer1 -= amount;
+                    textScoreplayer1.text = $"{scorePlayer1}";
+                }
+                else if (actorNumber == 2)
+                { 
+                    scorePlayer2 -= amount;
+                    textScoreplayer2.text = $"{scorePlayer2}";
+                }
+            
+                break;
+
+            default:
+
+                Debug.LogWarning("No se ejecutó ninguna operacion");
+
+            break;
         }
-        else if (actorNumber == 2)
-        { 
-            scorePlayer2++;
-            textScoreplayer2.text = $"{scorePlayer2}";
-        }
+    }
+
+    public enum ScoreOperation
+    {
+        AddPoints,
+        SubtractPoints,
     }
 }

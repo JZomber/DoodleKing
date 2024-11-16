@@ -9,11 +9,17 @@ public class PowerUpPickup : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private int selectedPowerUpIndex;
+    private Collider2D Collider2D;
 
-    private void Start()
+    private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
 
+        Collider2D = GetComponent<Collider2D>();
+    }
+
+    private void Start()
+    {
         SelectRandomPowerUp();
 
         spriteRenderer.sprite = powerUps[selectedPowerUpIndex].powerUpIcon;
@@ -25,6 +31,9 @@ public class PowerUpPickup : MonoBehaviour
         {
             StartCoroutine(ActivatePowerUpWithDuration(collision.gameObject));
         }
+
+        spriteRenderer.enabled = false;
+        Collider2D.enabled = false;
     }
 
     private IEnumerator ActivatePowerUpWithDuration(GameObject player)
