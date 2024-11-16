@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -94,6 +95,23 @@ public class PlayerDamage : MonoBehaviour, IDamageable
         if (collision.CompareTag("Explosion") && !_isHit)
         {
             _isHit = true;
+
+            _bombExplosionRef = collision.gameObject;
+            TakeDamage();
+
+            StartCoroutine(CoolDownHit(1f));
+        }
+        else if (collision.CompareTag("MercuryExplosion"))
+        {
+            _isHit = true;
+
+            PhotonView ownerPV = GetComponent<PhotonView>(); // Gets the component from the player that collided
+            if (ownerPV != null)
+            {
+                int damagePoints = FindObjectOfType<PowerUpsManager>().GetMercuryBombDamage;
+            
+                ScoreManager.instance.RemoveScorePoints(ownerPV.Owner.ActorNumber, damagePoints);
+            }
 
             _bombExplosionRef = collision.gameObject;
             TakeDamage();

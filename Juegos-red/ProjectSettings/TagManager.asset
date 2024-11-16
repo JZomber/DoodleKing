@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - Explosion
   - PowerUp
+  - MercuryExplosion
   layers:
   - Default
   - TransparentFX

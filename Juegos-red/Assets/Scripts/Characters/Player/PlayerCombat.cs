@@ -13,6 +13,7 @@ public class PlayerCombat : MonoBehaviour
     
     [Header("Combat Values")] 
     [SerializeField] private GameObject _bombPrefab;
+    [SerializeField] private GameObject _mercuryBombPrefab;
     [SerializeField] private Transform bombOrigin;
     [SerializeField] private float _bombCdTime;
     [SerializeField] private bool _isBombInCD;
@@ -21,6 +22,8 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private Vector2 _throwForce;
 
     private PlayerMovement _playerMovement;
+
+    [SerializeField] private bool hasMercuryBomb = false;
 
     private void Awake()
     {
@@ -55,8 +58,16 @@ public class PlayerCombat : MonoBehaviour
                 _isBombInCD = true;
                 StartCoroutine(BombCoolDown(_bombCdTime));
                 
-                var instance = PhotonNetwork.Instantiate(_bombPrefab.name, bombOrigin.position, quaternion.identity);
-                instance.GetComponent<BombController>().ThrowForce(throwDirection);
+                if (!hasMercuryBomb)
+                {
+                    var instance = PhotonNetwork.Instantiate(_bombPrefab.name, bombOrigin.position, quaternion.identity);
+                    instance.GetComponent<BombController>().ThrowForce(throwDirection);
+                }
+                else 
+                {
+                    var instance = PhotonNetwork.Instantiate(_mercuryBombPrefab.name, bombOrigin.position, quaternion.identity);
+                    instance.GetComponent<BombController>().ThrowForce(throwDirection);
+                }
             }
         }
     }
@@ -65,5 +76,13 @@ public class PlayerCombat : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         _isBombInCD = false;
+    }
+
+    public void MercuryBombPowerUp(PowerUp powerUp)
+    {
+        if (powerUp.powerUpName == "MercuryBomb")
+        {
+            hasMercuryBomb = true;
+        }
     }
 }

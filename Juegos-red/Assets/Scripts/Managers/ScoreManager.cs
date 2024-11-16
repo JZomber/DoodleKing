@@ -26,13 +26,40 @@ public class ScoreManager : MonoBehaviourPun
     {
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
-            photonView.RPC("UpdatePlayerScores", RpcTarget.All, actorNumber);
+            photonView.RPC("UpdatePlayerScores", RpcTarget.All, actorNumber, 0);
+        }
+    }
+
+    public void RemoveScorePoints(int actorNumber, int amount)
+    {
+        if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
+        {
+            photonView.RPC("UpdatePlayerScores", RpcTarget.All, actorNumber, amount);
         }
     }
 
     [PunRPC]
-    private void UpdatePlayerScores(int actorNumber)
+    private void UpdatePlayerScores(int actorNumber, int amount)
     {
+        //Debug.Log($"ACTOR NUMBER {actorNumber}");
+
+        if (amount > 0) // Block to rest player's scores.
+        {
+            if (actorNumber == 1)
+            {
+                scorePlayer1 -= amount;
+                textScoreplayer1.text = $"{scorePlayer1}";
+            }
+            else if (actorNumber == 2)
+            { 
+                scorePlayer2 -= amount;
+                textScoreplayer2.text = $"{scorePlayer2}";
+            }
+
+            amount = 0;
+            return;
+        }
+
         if (actorNumber == 1)
         {
             scorePlayer1++;

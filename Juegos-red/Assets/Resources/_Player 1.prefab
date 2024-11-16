@@ -286,10 +286,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bombPrefab: {fileID: 7484800346790639635, guid: 040ffd3e8ef82ab47a61500564c887b3, type: 3}
+  _mercuryBombPrefab: {fileID: 7484800346790639635, guid: e4be8c43f70c5804e83453a32834f187, type: 3}
   bombOrigin: {fileID: 8933357757479471732}
   _bombCdTime: 3
   _isBombInCD: 0
   _throwForce: {x: 4, y: 4}
+  hasMercuryBomb: 0
 --- !u!114 &6647397274922468665
 MonoBehaviour:
   m_ObjectHideFlags: 0
