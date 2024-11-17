@@ -26,7 +26,7 @@ public class MenuManager : MonoBehaviour
     
     private IEnumerator MenuScreen(string str) //Carga la pantalla "Menú"
     {
-        transition.SetTrigger("Start");
+        ActivateTransition();
 
         yield return new WaitForSeconds(2f);
 
@@ -35,7 +35,7 @@ public class MenuManager : MonoBehaviour
 
     private IEnumerator LoadLevel(string str)
     {
-        transition.SetTrigger("Start");
+        ActivateTransition();
 
         yield return new WaitForSeconds(2f);
 
@@ -44,7 +44,7 @@ public class MenuManager : MonoBehaviour
     
     private IEnumerator LobbyScreen(string str)
     {
-        transition.SetTrigger("Start");
+        ActivateTransition();
 
         yield return new WaitForSeconds(2f);
 
@@ -54,5 +54,10 @@ public class MenuManager : MonoBehaviour
     public void GameQuit() // Quita el juego
     {
         Application.Quit();
+    }
+
+    public void ActivateTransition()
+    {
+        transition.SetTrigger("Start");
     }
 }

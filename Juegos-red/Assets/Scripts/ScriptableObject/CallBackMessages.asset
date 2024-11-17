@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9bd1ec32bc66634e806bd497b87afaf, type: 3}
+  m_Name: CallBackMessages
+  m_EditorClassIdentifier: 
+  OnPlayerDisconnected: Un jugador se ha desconectado de la partida. Volviendo al
+    menu...
+  OnJoinRoomFailed: El nombre de la sala no es correcto o la sala no existe.
+  OnTryToCreateWithoutName: Debe ingresar un nombre para crear una sala.
+  OnTryToJoinWithoutName: Debe ingresar un nombre para buscar una sala.
+  OnTryToJoinFullRoom: La sala que intenta ingresar se encuentra llena.
+  OnTryToJoinWithGameVersionMismatch: Fallo al unirse, el juego se encuentra desactualizado.
