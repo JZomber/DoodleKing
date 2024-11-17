@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PowerUpPickup : MonoBehaviour
@@ -44,7 +45,7 @@ public class PowerUpPickup : MonoBehaviour
 
         powerUps[selectedPowerUpIndex].DeactivatePowerUp(player);
 
-        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 
     private void SelectRandomPowerUp()
@@ -54,5 +55,16 @@ public class PowerUpPickup : MonoBehaviour
             Debug.LogWarning("No hay power ups asignados al array del objeto");
             return;
         }
+
+        selectedPowerUpIndex = Random.Range(0, powerUps.Length);
+
+        spriteRenderer.sprite = powerUps[selectedPowerUpIndex].powerUpIcon;
+    }
+
+    private void OnEnable()
+    {
+        SelectRandomPowerUp();
+
+        spriteRenderer.sprite = powerUps[selectedPowerUpIndex].powerUpIcon;
     }
 }

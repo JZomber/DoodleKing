@@ -67,6 +67,8 @@ public class PlayerCombat : MonoBehaviour
                 {
                     var instance = PhotonNetwork.Instantiate(_mercuryBombPrefab.name, bombOrigin.position, quaternion.identity);
                     instance.GetComponent<BombController>().ThrowForce(throwDirection);
+
+                    hasMercuryBomb = false;
                 }
             }
         }

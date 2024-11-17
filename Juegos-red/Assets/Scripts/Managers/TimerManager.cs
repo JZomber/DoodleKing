@@ -10,8 +10,10 @@ using Unity.VisualScripting;
 public class TimerManager : MonoBehaviourPunCallbacks
 {
     [Header("Configuracion de tiempo")]
-    public float gameTime = 60f; // Duraci�n del juego en segundos
+    public float gameTime = 60f; // Duracion del juego en segundos
     private float remainingTime;
+
+    [SerializeField] private int nextPowerUpTime = 10;
 
     [Header("UI Elements")]
     public TMP_Text timerText;
@@ -22,6 +24,8 @@ public class TimerManager : MonoBehaviourPunCallbacks
     private GameplayCallBacks gameplayCallBacks;
 
     public event Action OnGameFinished;
+
+    public event Action OnSpawnPowerUp;
 
     private void Start()
     {
@@ -50,6 +54,14 @@ public class TimerManager : MonoBehaviourPunCallbacks
         {
             yield return new WaitForSeconds(1f);
             remainingTime--;
+
+            nextPowerUpTime--;
+
+            if (nextPowerUpTime <= 0)
+            {
+                OnSpawnPowerUp?.Invoke();
+                nextPowerUpTime = 10;
+            }
 
             // Actualizamos el tiempo para todos los jugadores
             photonView.RPC("UpdateTimer", RpcTarget.All, remainingTime);

@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PowerUpsManager : MonoBehaviour
 {
+    [SerializeField] private GameObject powerUpPickup;
+
     [SerializeField] private int MercuryBombPointsDamage;
 
     [SerializeField] private bool isDoublePointsActive;
@@ -12,16 +16,23 @@ public class PowerUpsManager : MonoBehaviour
 
     public int GetMercuryBombDamage => MercuryBombPointsDamage;
 
+    TimerManager timerManager;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        timerManager = FindObjectOfType<TimerManager>();
+        if (timerManager != null)
+        {
+            timerManager.OnSpawnPowerUp += SpawnNextPowerUp;
+        }
+
+        powerUpPickup.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void SpawnNextPowerUp()
     {
-        
+        PhotonNetwork.Instantiate(powerUpPickup.name, powerUpPickup.transform.position, Quaternion.identity);
     }
 
     public void StateDoublePoints(PowerUp powerUp)
@@ -34,5 +45,10 @@ public class PowerUpsManager : MonoBehaviour
         {
             isDoublePointsActive = false;
         }
+    }
+
+    private void OnDestroy()
+    {
+        timerManager.OnSpawnPowerUp -= SpawnNextPowerUp;
     }
 }
