@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PowerUpPickup : MonoBehaviour
+public class PowerUpPickup : MonoBehaviourPun
 {
     [SerializeField] PowerUp[] powerUps;
-
-
     private SpriteRenderer spriteRenderer;
     private int selectedPowerUpIndex;
     private Collider2D Collider2D;
+    private Coroutine coroutineSelfDestroy;
 
     private void Awake()
     {
@@ -21,9 +21,24 @@ public class PowerUpPickup : MonoBehaviour
 
     private void Start()
     {
-        SelectRandomPowerUp();
+        if (PhotonNetwork.IsMasterClient)
+        {
+            int randomIndex = Random.Range(0, powerUps.Length);
 
-        spriteRenderer.sprite = powerUps[selectedPowerUpIndex].powerUpIcon;
+            photonView.RPC("SelectRandomPowerUp", RpcTarget.All, randomIndex);
+
+            if (coroutineSelfDestroy == null)
+            {
+                coroutineSelfDestroy = StartCoroutine(SelfDestroy());
+            }
+        }
+    }
+
+    private IEnumerator SelfDestroy()
+    {
+        yield return new WaitForSeconds(8f);
+
+        PhotonNetwork.Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -31,10 +46,8 @@ public class PowerUpPickup : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             StartCoroutine(ActivatePowerUpWithDuration(collision.gameObject));
+            photonView.RPC("DisablePowerUp", RpcTarget.All);
         }
-
-        spriteRenderer.enabled = false;
-        Collider2D.enabled = false;
     }
 
     private IEnumerator ActivatePowerUpWithDuration(GameObject player)
@@ -45,10 +58,11 @@ public class PowerUpPickup : MonoBehaviour
 
         powerUps[selectedPowerUpIndex].DeactivatePowerUp(player);
 
-        Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
     }
 
-    private void SelectRandomPowerUp()
+    [PunRPC]
+    private void SelectRandomPowerUp(int index)
     {
         if (powerUps.Length == 0)
         {
@@ -56,15 +70,21 @@ public class PowerUpPickup : MonoBehaviour
             return;
         }
 
-        selectedPowerUpIndex = Random.Range(0, powerUps.Length);
+        selectedPowerUpIndex = index;
 
         spriteRenderer.sprite = powerUps[selectedPowerUpIndex].powerUpIcon;
     }
 
-    private void OnEnable()
+    [PunRPC]
+    private void DisablePowerUp()
     {
-        SelectRandomPowerUp();
+        spriteRenderer.enabled = false;
+        Collider2D.enabled = false;
 
-        spriteRenderer.sprite = powerUps[selectedPowerUpIndex].powerUpIcon;
+        if (PhotonNetwork.IsMasterClient && coroutineSelfDestroy != null)
+        {
+            StopCoroutine(coroutineSelfDestroy);
+            coroutineSelfDestroy = null;
+        }
     }
 }
