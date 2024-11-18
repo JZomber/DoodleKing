@@ -38,7 +38,10 @@ public class PowerUpPickup : MonoBehaviourPun
     {
         yield return new WaitForSeconds(8f);
 
-        PhotonNetwork.Destroy(gameObject);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.Destroy(gameObject);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -58,7 +61,10 @@ public class PowerUpPickup : MonoBehaviourPun
 
         powerUps[selectedPowerUpIndex].DeactivatePowerUp(player);
 
-        PhotonNetwork.Destroy(gameObject);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.Destroy(gameObject);
+        }
     }
 
     [PunRPC]

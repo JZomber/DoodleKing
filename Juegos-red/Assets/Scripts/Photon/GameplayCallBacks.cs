@@ -4,12 +4,26 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
+using Unity.VisualScripting;
 
 public class GameplayCallBacks : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject CallBackCanvas;
     [SerializeField] private TMPro.TMP_Text errorText;
     [SerializeField] private CallBackMessages callBackMessages; // S.Object with different messages
+
+    private TimerManager timerManager;
+
+    private bool matchEnded = false;
+
+    private void Start()
+    {
+        timerManager = FindObjectOfType<TimerManager>();
+        if (timerManager != null)
+        {
+            timerManager.OnGameFinished += GameFinished;
+        }
+    }
 
     public event Action OnMatchBeging;
     public event Action OnMatchCanceled;
@@ -23,9 +37,13 @@ public class GameplayCallBacks : MonoBehaviourPunCallbacks
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        OnMatchCanceled?.Invoke();
-        ActivatePlayerLeftPopup();
-        Debug.Log("Un jugador ha salido de la partida");
+        if (!matchEnded)
+        {
+            OnMatchCanceled?.Invoke();
+            ActivatePlayerLeftPopup();
+            Debug.Log("Un jugador ha salido de la partida");
+        }
+        
         //base.OnPlayerLeftRoom(otherPlayer);
     }
 
@@ -33,5 +51,11 @@ public class GameplayCallBacks : MonoBehaviourPunCallbacks
     {
         CallBackCanvas.SetActive(true);
         errorText.text = callBackMessages.OnPlayerDisconnected;
+    }
+
+    private void GameFinished()
+    {
+        timerManager.OnGameFinished -= GameFinished;
+        matchEnded = true;
     }
 }
