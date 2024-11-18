@@ -7,7 +7,12 @@ using System;
 
 public class GameplayCallBacks : MonoBehaviourPunCallbacks
 {
-    public event Action OnMatchBeging; 
+    [SerializeField] private GameObject CallBackCanvas;
+    [SerializeField] private TMPro.TMP_Text errorText;
+    [SerializeField] private CallBackMessages callBackMessages; // S.Object with different messages
+
+    public event Action OnMatchBeging;
+    public event Action OnMatchCanceled;
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
@@ -18,7 +23,15 @@ public class GameplayCallBacks : MonoBehaviourPunCallbacks
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
+        OnMatchCanceled?.Invoke();
+        ActivatePlayerLeftPopup();
         Debug.Log("Un jugador ha salido de la partida");
         //base.OnPlayerLeftRoom(otherPlayer);
+    }
+
+    private void ActivatePlayerLeftPopup()
+    {
+        CallBackCanvas.SetActive(true);
+        errorText.text = callBackMessages.OnPlayerDisconnected;
     }
 }

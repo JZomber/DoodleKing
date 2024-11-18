@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 public class RoomManager : MonoBehaviourPunCallbacks
 {
     private TimerManager timerManager;
+    private GameplayCallBacks gameplayCallBacks;
 
     private void Start()
     {
@@ -14,6 +15,12 @@ public class RoomManager : MonoBehaviourPunCallbacks
         if (timerManager != null)
         {
             timerManager.OnGameFinished += EndGame;
+        }
+
+        gameplayCallBacks = FindObjectOfType<GameplayCallBacks>();
+        if (gameplayCallBacks != null)
+        {
+            gameplayCallBacks.OnMatchCanceled += EndGame;
         }
     }
 
@@ -31,5 +38,6 @@ public class RoomManager : MonoBehaviourPunCallbacks
         }
 
         timerManager.OnGameFinished -= EndGame;
+        gameplayCallBacks.OnMatchCanceled -= EndGame;
     }
 }

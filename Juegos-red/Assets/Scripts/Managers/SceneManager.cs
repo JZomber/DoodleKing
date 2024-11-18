@@ -11,6 +11,7 @@ public class SceneManager : MonoBehaviour
     [SerializeField] private Animator transition; //Transición entre escenas
 
     private TimerManager timerManager;
+    private GameplayCallBacks gameplayCallBacks;
     
     // Start is called before the first frame update
     void Start()
@@ -20,11 +21,20 @@ public class SceneManager : MonoBehaviour
         {
             timerManager.OnGameFinished += LoadMenu;
         }
+
+        gameplayCallBacks = FindObjectOfType<GameplayCallBacks>();
+        if (gameplayCallBacks != null)
+        {
+            gameplayCallBacks.OnMatchCanceled += LoadMenu;
+        }
     }
 
     public void LoadMenu()
     {
         StartCoroutine(InitialTransition());
+
+        timerManager.OnGameFinished -= LoadMenu;
+        gameplayCallBacks.OnMatchCanceled -= LoadMenu;
     }
 
     private IEnumerator InitialTransition()
