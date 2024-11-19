@@ -22,7 +22,7 @@ public class BombController : MonoBehaviour
     private void Start()
     {
         StartCoroutine(ExplodeBomb(explosionTime));
-        StartCoroutine(SelfDestroy(explosionTime + 1f));
+        StartCoroutine(SelfDestroy(explosionTime + 0.30f)); // Bomb's explosion duration
     }
 
     public void ThrowForce(Vector2 direction)
