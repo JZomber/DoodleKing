@@ -41,8 +41,6 @@ public class ScoreManager : MonoBehaviourPun
     [PunRPC]
     private void UpdatePlayerScores(int actorNumber, int amount, ScoreOperation operation)
     {
-        //Debug.Log($"ACTOR NUMBER {actorNumber}");
-
         switch (operation)
         {
             case ScoreOperation.AddPoints:
@@ -81,6 +79,20 @@ public class ScoreManager : MonoBehaviourPun
 
             break;
         }
+    }
+
+    public int GetWinnerActorNumber()
+    {
+        if (scorePlayer1 > scorePlayer2)
+        {
+            return PhotonNetwork.PlayerList[0].ActorNumber; // Player 1 won.
+        }
+        else if (scorePlayer2 > scorePlayer1)
+        {
+            return PhotonNetwork.PlayerList[1].ActorNumber; // Player 2 won.
+        }
+
+        return -1; // Tie case
     }
 
     public enum ScoreOperation

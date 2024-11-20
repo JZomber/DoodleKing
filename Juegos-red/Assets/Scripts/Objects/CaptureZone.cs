@@ -31,6 +31,7 @@ public class CaptureZone : MonoBehaviourPun
         if (gameplayCallBacks != null)
         {
             gameplayCallBacks.OnMatchBeging += InitializeRPC;
+            gameplayCallBacks.OnMatchCanceled += DeactivateZone;
         }
 
         timerManager = FindObjectOfType<TimerManager>();
@@ -96,7 +97,7 @@ public class CaptureZone : MonoBehaviourPun
 
                     if (powerUpsManager.GetIsDoublePointsActive)
                     {
-                        amount *= 2;
+                        amount = 2;
                     }
 
                     ScoreManager.instance.AddScorePoints(playerPV.OwnerActorNr, amount);
@@ -126,6 +127,13 @@ public class CaptureZone : MonoBehaviourPun
         Collider2D.enabled = false;
         spriteRenderer.enabled = false;
 
+        if (pointsCoroutine != null)
+        {
+            StopCoroutine(pointsCoroutine);
+            pointsCoroutine = null;
+        }
+
         timerManager.OnGameFinished -= DeactivateZone;
+        gameplayCallBacks.OnMatchCanceled -= DeactivateZone;
     }
 }

@@ -48,8 +48,26 @@ public class PowerUpPickup : MonoBehaviourPun
     {
         if (collision.CompareTag("Player"))
         {
-            StartCoroutine(ActivatePowerUpWithDuration(collision.gameObject));
+            if (powerUps[selectedPowerUpIndex].hasDuration)
+            {
+                StartCoroutine(ActivatePowerUpWithDuration(collision.gameObject));
+            }
+            else
+            {
+                ActivatePowerUpEffect(collision.gameObject);
+            }
+
             photonView.RPC("DisablePowerUp", RpcTarget.All);
+        }
+    }
+
+    private void ActivatePowerUpEffect(GameObject player)
+    {
+        powerUps[selectedPowerUpIndex].ActivatePowerUp(player);
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            StartCoroutine(DestroyAfterDelay());
         }
     }
 
@@ -63,7 +81,7 @@ public class PowerUpPickup : MonoBehaviourPun
 
         if (PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.Destroy(gameObject);
+            StartCoroutine(DestroyAfterDelay());
         }
     }
 
@@ -84,6 +102,7 @@ public class PowerUpPickup : MonoBehaviourPun
     [PunRPC]
     private void DisablePowerUp()
     {
+
         spriteRenderer.enabled = false;
         Collider2D.enabled = false;
 
@@ -92,5 +111,12 @@ public class PowerUpPickup : MonoBehaviourPun
             StopCoroutine(coroutineSelfDestroy);
             coroutineSelfDestroy = null;
         }
+    }
+
+    private IEnumerator DestroyAfterDelay()
+    {
+        yield return new WaitForSeconds(0.25f);
+
+        PhotonNetwork.Destroy(gameObject);
     }
 }

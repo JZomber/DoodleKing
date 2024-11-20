@@ -5,10 +5,11 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.SceneManagement;
 using TMPro;
+using Photon.Pun;
 
 public class SceneManager : MonoBehaviour
 {    
-    [SerializeField] private Animator transition; //Transición entre escenas
+    [SerializeField] private Animator transition; // Transition between scenes
 
     private TimerManager timerManager;
     private GameplayCallBacks gameplayCallBacks;
@@ -19,7 +20,7 @@ public class SceneManager : MonoBehaviour
         timerManager = FindObjectOfType<TimerManager>();
         if (timerManager != null)
         {
-            timerManager.OnGameFinished += LoadMenu;
+            timerManager.OnGameFinished += LoadPlayersScreens;
         }
 
         gameplayCallBacks = FindObjectOfType<GameplayCallBacks>();
@@ -29,25 +30,70 @@ public class SceneManager : MonoBehaviour
         }
     }
 
-    public void LoadMenu()
+    private void LoadPlayersScreens()
     {
-        StartCoroutine(InitialTransition());
+        int winnerActorNumber = ScoreManager.instance.GetWinnerActorNumber();
 
-        timerManager.OnGameFinished -= LoadMenu;
+        if (winnerActorNumber == -1)
+        {
+            LoadTieScreen();
+        }
+        else if (PhotonNetwork.LocalPlayer.ActorNumber == winnerActorNumber)
+        {
+            LoadWinScreen();
+        }
+        else
+        {
+            LoadDefeatScreen();
+        }
+
+        timerManager.OnGameFinished -= LoadPlayersScreens;
         gameplayCallBacks.OnMatchCanceled -= LoadMenu;
     }
 
-    private IEnumerator InitialTransition()
+    private void LoadWinScreen()
+    {
+        InitialTransition("ScreenVictory");
+    }
+
+    private void LoadDefeatScreen()
+    {
+        InitialTransition("ScreenDefeat");
+    }
+
+    private void LoadTieScreen()
+    {
+       InitialTransition("ScreenTie");
+    }
+
+    private void LoadMenu() // Usually when a player disconnects
+    {
+        StartCoroutine(LoadSceneWithDelay("ScreenMenu"));
+
+        timerManager.OnGameFinished -= LoadPlayersScreens;
+        gameplayCallBacks.OnMatchCanceled -= LoadMenu;
+    }
+
+    private void InitialTransition(string sceneName)
+    {
+        transition.SetTrigger("Start");
+
+        StartCoroutine(LoadScene(sceneName));
+    }
+
+    private IEnumerator LoadScene(string str)
     {
         yield return new WaitForSeconds(3f);
 
-        transition.SetTrigger("Start");
-
-        StartCoroutine(MenuScreen("ScreenMenu"));
+        UnityEngine.SceneManagement.SceneManager.LoadScene(str);
     }
 
-    private IEnumerator MenuScreen(string str) //Carga la pantalla "Menú"
-    {
+    private IEnumerator LoadSceneWithDelay(string str)
+    {   
+        yield return new WaitForSeconds(4f);
+
+        transition.SetTrigger("Start");
+
         yield return new WaitForSeconds(2f);
 
         UnityEngine.SceneManagement.SceneManager.LoadScene(str);

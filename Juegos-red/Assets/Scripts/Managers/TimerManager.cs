@@ -17,7 +17,6 @@ public class TimerManager : MonoBehaviourPunCallbacks
 
     [Header("UI Elements")]
     public TMP_Text timerText;
-    public TMP_Text resultText; // Texto para mostrar el resultado
 
     private bool gameEnded = false;
 
@@ -37,19 +36,12 @@ public class TimerManager : MonoBehaviourPunCallbacks
         if (gameplayCallBacks != null)
         {
             gameplayCallBacks.OnMatchBeging += InitializeTimer;
-            //Debug.Log("Timer subscripto al evento 'OnMatchBeging'");
+            gameplayCallBacks.OnMatchCanceled += MatchCanceled;
         }
-
-        //// Solo el MasterClient es responsable de actualizar el temporizador
-        //if (PhotonNetwork.IsMasterClient && !gameStarted)
-        //{
-        //    StartCoroutine(GameTimer());
-        //}
     }
 
     private IEnumerator GameTimer()
     {
-        // Mientras haya tiempo restante y el juego no haya terminado
         while (remainingTime > 0 && !gameEnded)
         {
             yield return new WaitForSeconds(1f);
@@ -63,11 +55,8 @@ public class TimerManager : MonoBehaviourPunCallbacks
                 nextPowerUpTime = 10;
             }
 
-            // Actualizamos el tiempo para todos los jugadores
             photonView.RPC("UpdateTimer", RpcTarget.All, remainingTime);
         }
-
-        // Fin del tiempo
         if (!gameEnded)
         {
             photonView.RPC("EndGame", RpcTarget.All);
@@ -77,70 +66,37 @@ public class TimerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     private void UpdateTimer(float time)
     {
-        // Actualizar la visualizacion del temporizador en pantalla
         timerText.text = $"{time}";
+    }
+    
+    private void MatchCanceled()
+    {
+        photonView.RPC("EndGame", RpcTarget.All);
     }
 
     [PunRPC]
     private void EndGame()
     {
         gameEnded = true;
-
-        gameplayCallBacks.OnMatchBeging -= InitializeTimer;
-
-        // Solo el MasterClient calcula el resultado
-        if (PhotonNetwork.IsMasterClient)
+        
+        if (!gameplayCallBacks.matchCanceled)
         {
-            int winnerActorNumber = GetWinnerActorNumber();
-            photonView.RPC("DisplayResult", RpcTarget.All, winnerActorNumber);
+            OnGameFinished?.Invoke();
         }
 
-        OnGameFinished?.Invoke();
-    }
-
-    private int GetWinnerActorNumber()
-    {
-        // Obtener la puntuacion de los jugadores y compararlas
-
-        int scorePlayer1 = ScoreManager.instance.GetScorePlayer1;
-        int scorePlayer2 = ScoreManager.instance.GetScorePlayer2;
-
-        if (scorePlayer1 > scorePlayer2)
-        {
-            return PhotonNetwork.PlayerList[0].ActorNumber; // Player 1 won.
-        }
-        else if (scorePlayer2 > scorePlayer1)
-        {
-            return PhotonNetwork.PlayerList[1].ActorNumber; // Player 2 won.
-        }
-
-        return -1; // Tie case
-    }
-
-    [PunRPC]
-    private void DisplayResult(int winnerActorNumber)
-    {
-        if (winnerActorNumber == -1)
-        {
-            resultText.text = "Empate!";
-        }
-        else
-        {
-            bool isWinner = PhotonNetwork.LocalPlayer.ActorNumber == winnerActorNumber; 
-            resultText.text = isWinner ? "Victoria!" : "Derrota"; // Mostrar el mensaje de victoria o derrota seg�n el resultado
-        }
-
-        resultText.gameObject.SetActive(true);
+        gameplayCallBacks.OnMatchCanceled -= EndGame;
     }
 
     private void InitializeTimer()
     {
         StartCoroutine(GameTimer());
+
+        gameplayCallBacks.OnMatchBeging -= InitializeTimer;
     }
 
     public void ExtraTime(PowerUp powerUp, float time)
     {
-        if (powerUp.powerUpName == "ExtraTime" && PhotonNetwork.IsMasterClient)
+        if (powerUp.powerUpName == "ExtraTime" && PhotonNetwork.IsMasterClient && !gameEnded)
         {
             photonView.RPC("AddExtraTime", RpcTarget.All, time);
         }
@@ -150,6 +106,5 @@ public class TimerManager : MonoBehaviourPunCallbacks
     private void AddExtraTime(float time)
     {
         remainingTime += time;
-        Debug.Log("AGREGADO EXTRA TIME");
     }
 }

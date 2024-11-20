@@ -25,6 +25,8 @@ public class PowerUpsManager : MonoBehaviour
         if (timerManager != null)
         {
             timerManager.OnSpawnPowerUp += SpawnNextPowerUp;
+            timerManager.OnGameFinished += UnsubscribeEvents;
+            
         }
 
         powerUpPickup.SetActive(false);
@@ -47,7 +49,7 @@ public class PowerUpsManager : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    private void UnsubscribeEvents()
     {
         timerManager.OnSpawnPowerUp -= SpawnNextPowerUp;
     }

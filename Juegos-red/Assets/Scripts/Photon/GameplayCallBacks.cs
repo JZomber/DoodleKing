@@ -16,6 +16,8 @@ public class GameplayCallBacks : MonoBehaviourPunCallbacks
 
     private bool matchEnded = false;
 
+    public bool matchCanceled {get; private set;}
+
     private void Start()
     {
         timerManager = FindObjectOfType<TimerManager>();
@@ -23,6 +25,8 @@ public class GameplayCallBacks : MonoBehaviourPunCallbacks
         {
             timerManager.OnGameFinished += GameFinished;
         }
+
+        matchCanceled = false;
     }
 
     public event Action OnMatchBeging;
@@ -39,6 +43,7 @@ public class GameplayCallBacks : MonoBehaviourPunCallbacks
     {
         if (!matchEnded)
         {
+            matchCanceled = true;
             OnMatchCanceled?.Invoke();
             ActivatePlayerLeftPopup();
             Debug.Log("Un jugador ha salido de la partida");
@@ -53,7 +58,7 @@ public class GameplayCallBacks : MonoBehaviourPunCallbacks
         errorText.text = callBackMessages.OnPlayerDisconnected;
     }
 
-    private void GameFinished()
+    private void GameFinished() // To avoid trigger "OnPlayerLeftRoom"
     {
         timerManager.OnGameFinished -= GameFinished;
         matchEnded = true;

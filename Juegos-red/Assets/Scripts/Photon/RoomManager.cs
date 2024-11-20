@@ -24,8 +24,10 @@ public class RoomManager : MonoBehaviourPunCallbacks
         }
     }
 
-    private void EndGame()
+    private IEnumerator DisconnectPlayers()
     {
+        yield return new WaitForSeconds(2f);
+
         if (PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.CurrentRoom.IsOpen = false;
@@ -36,8 +38,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.LeaveRoom();
         }
+    }
 
+    private void EndGame()
+    {
         timerManager.OnGameFinished -= EndGame;
         gameplayCallBacks.OnMatchCanceled -= EndGame;
+
+        StartCoroutine(DisconnectPlayers());
     }
 }

@@ -9,6 +9,7 @@ public class PowerUp : ScriptableObject
 
     public Sprite powerUpIcon;
 
+    public bool hasDuration;
     public float duration = 1.0f;
 
     public virtual void ActivatePowerUp(GameObject player)
