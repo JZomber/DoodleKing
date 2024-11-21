@@ -4455,8 +4455,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b1474cd4145a0f4c836551d459cf066, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameTime: 30
-  nextPowerUpTime: 10
+  gameTime: 60
+  nextPowerUpTime: 15
   timerText: {fileID: 1586289370}
 --- !u!114 &806067521
 MonoBehaviour:
